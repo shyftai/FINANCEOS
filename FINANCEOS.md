@@ -87,6 +87,7 @@ Then show the quick commands reference:
   │  Report     /finance:report · /finance:pnl            │
   │             /finance:balance · /finance:metrics       │
   │  Audit      /finance:reconcile · /finance:audit       │
+  │  Scale      /finance:swarm                             │
   │  Agency     /finance:portfolio                       │
   │  Review     /finance:debrief · /finance:compliance    │
   │  System     /finance:feedback                        │
@@ -255,6 +256,11 @@ workspaces/
 |---------|-------------|
 | `/finance:reconcile` | Bank reconciliation |
 | `/finance:audit` | Financial audit preparation |
+
+### Scale
+| Command | What it does |
+|---------|-------------|
+| `/finance:swarm` | Run financial operations with parallel agents |
 
 ### Agency
 | Command | What it does |
