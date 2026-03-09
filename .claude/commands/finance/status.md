@@ -7,6 +7,7 @@ Display all available FINANCE:OS commands.
 </objective>
 
 <process>
-1. Display all commands grouped: Setup, Daily, Cash, Revenue, Expenses, Budget, Tax, Report, Audit, Agency
-2. Footer: by Shyft AI
+1. Show workspace info: active workspace name, collaboration mode (solo/team), execution mode (interactive/auto)
+2. Display all commands grouped: Setup, Daily, Cash, Revenue, Expenses, Budget, Tax, Report, Audit, Agency
+3. Footer: by Shyft AI
 </process>

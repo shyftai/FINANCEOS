@@ -30,6 +30,7 @@ Then immediately scan for workspaces and tools, and display the system status:
   │                                                    │
   │  Workspaces:  {list workspace folders or "none — run /finance:onboard"}
   │  Mode:        {solo / team}                        │
+  │  Execution:   {interactive / auto}              │
   │                                                    │
   │  MCP servers:                                      │
   │  [ ] Slack (alerts)       [ ] QuickBooks            │
@@ -255,6 +256,39 @@ workspaces/
 | Command | What it does |
 |---------|-------------|
 | `/finance:portfolio` | Multi-company financial dashboard |
+
+---
+
+## Execution mode
+
+FINANCE:OS supports two execution modes, configured per workspace in `workspace.config.md`:
+
+### Interactive mode (default)
+- Confirms each major decision with an approval gate
+- Shows full context before proceeding
+- Pauses at every checkpoint for user input
+- Best for: new workspaces, learning the system, high-stakes financial decisions
+
+### Auto mode
+- Auto-approves most decisions — just executes
+- Skips approval gates for report drafts, categorization results, forecast runs, and budget setup
+- Still shows results inline so you can review, but does not pause
+- Only stops for **hard gates** (non-skippable):
+  - Tax filings — always requires explicit approval before filing
+  - External payments — never auto-approve outbound payments
+  - Reconciliation sign-offs — always requires explicit approval to mark reconciled
+  - Budget overages — always flags if spend exceeds budget allocation
+  - Compliance/legal violations — never auto-skip regulation violations
+
+**How it works in commands:**
+- Commands that show `>> Approve \ Edit \ Reject` gates: in auto mode, auto-approve and continue. Log the auto-approval in `logs/decisions.md`.
+- Commands that ask clarifying questions: in auto mode, use sensible defaults from `defaults.md` and proceed. Log what was assumed.
+- Multi-step workflows (categorize → reconcile → report): in auto mode, chain automatically. Stop only at hard gates.
+
+**Toggling:**
+- Set during onboarding, or change anytime in `workspace.config.md`
+- `**Execution mode:** auto` or `**Execution mode:** interactive`
+- Can also toggle mid-session: just say "switch to auto" or "switch to interactive"
 
 ---
 

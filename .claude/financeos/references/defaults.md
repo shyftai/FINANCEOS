@@ -1,5 +1,12 @@
 # FINANCE:OS — Defaults
 
+## Workspace defaults
+
+| Setting | Default | Override in |
+|---------|---------|------------|
+| Execution mode | interactive | workspace.config.md |
+| Collaboration mode | solo | workspace.config.md |
+
 ## Reporting defaults
 
 | Setting | Default | Override in |
