@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.1.0 — 2026-03-09
+- Add auto execution mode (interactive/auto with hard gates)
+- Add ui-brand.md visual consistency standard
+- Add /finance:debrief command
+- Add /finance:feedback command
+- Add /finance:compliance command
+- Add swarm reference for parallel financial operations
+
 ## v1.0.0 — Launch
 
 ### Core system

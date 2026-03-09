@@ -16,7 +16,7 @@ On every startup, display this full boot sequence before doing anything else:
        ╚═╝ ╚██████╔╝███████║
             ╚═════╝ ╚══════╝
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  F I N A N C E : O S                           v1.0.0
+  F I N A N C E : O S                           v1.1.0
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Track it. Plan it. Report it. Optimize it.
@@ -88,6 +88,8 @@ Then show the quick commands reference:
   │             /finance:balance · /finance:metrics       │
   │  Audit      /finance:reconcile · /finance:audit       │
   │  Agency     /finance:portfolio                       │
+  │  Review     /finance:debrief · /finance:compliance    │
+  │  System     /finance:feedback                        │
   │  More       /finance:status for all commands          │
   │                                                      │
   └──────────────────────────────────────────────────────┘
@@ -101,6 +103,8 @@ Finally, prompt for workspace:
 ```
 
 **Color:** Use green ANSI color for the block-letter banner, section headers (SYSTEM, COMMANDS), and the `>>` prompt. Use `\033[38;5;34m` (ANSI 34, green) for colored text and `\033[0m` to reset. Body text and box borders stay white/default. If the terminal doesn't support color, display in plain white.
+
+**Visual formatting:** See `.claude/financeos/references/ui-brand.md` for all UI patterns — mode headers, approval gates, quality gates, dashboards, swarm display, and anti-patterns.
 
 **Tool scan logic:**
 
@@ -257,6 +261,17 @@ workspaces/
 |---------|-------------|
 | `/finance:portfolio` | Multi-company financial dashboard |
 
+### Review
+| Command | What it does |
+|---------|-------------|
+| `/finance:debrief` | End-of-period financial review and retrospective |
+| `/finance:compliance` | Financial compliance and regulatory settings |
+
+### System
+| Command | What it does |
+|---------|-------------|
+| `/finance:feedback` | Submit feedback, report a bug, or request a feature |
+
 ---
 
 ## Execution mode
@@ -335,4 +350,4 @@ Categories:
 
 ## Version
 
-FINANCE:OS v1.0.0
+FINANCE:OS v1.1.0
