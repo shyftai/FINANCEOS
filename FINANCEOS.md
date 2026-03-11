@@ -295,16 +295,79 @@ FINANCE:OS supports two execution modes, configured per workspace in `workspace.
 - Skips approval gates for report drafts, categorization results, forecast runs, and budget setup
 - Still shows results inline so you can review, but does not pause
 - Only stops for **hard gates** (non-skippable):
+
+  **Outbound (externally visible — irreversible):**
   - Tax filings — always requires explicit approval before filing
   - External payments — never auto-approve outbound payments
-  - Reconciliation sign-offs — always requires explicit approval to mark reconciled
-  - Budget overages — always flags if spend exceeds budget allocation
-  - Compliance/legal violations — never auto-skip regulation violations
+  - Audit report sharing — sending financial reports to external parties
+  - Financial report distribution — sharing P&L, balance sheets, forecasts externally
+
+  **Data integrity (corrupts your financial records):**
+  - Bank account changes — adding, modifying, or removing bank connections
+  - Payroll runs — never auto-approve payroll execution
+  - Tax rate edits — changes to tax calculations or withholding rates
+  - Financial model overwrites — destroying validated models or projections
+  - Reconciliation sign-offs — marking accounts as reconciled
+  - Chart of accounts edits — changing account structure or categories
+  - Historical data edits — modifying closed-period transactions
+
+  **Infrastructure (breaks financial operations):**
+  - Banking API or credential changes — rotating, updating, or exposing keys
+  - Payment processor config — gateway settings, routing rules
+  - Accounting software config — integration settings, sync rules
+  - Webhook creation/deletion — webhooks push data to external systems
+
+  **Financial / compliance:**
+  - Budget overages — spend exceeds budget allocation
+  - Compliance/regulatory violations — never auto-skip
+  - Tool credit checks marked `confirm-before-every-use`
+  - Any calculation changing totals >10% from previous — stop and verify
 
 **How it works in commands:**
 - Commands that show `>> Approve \ Edit \ Reject` gates: in auto mode, auto-approve and continue. Log the auto-approval in `logs/decisions.md`.
 - Commands that ask clarifying questions: in auto mode, use sensible defaults from `defaults.md` and proceed. Log what was assumed.
 - Multi-step workflows (categorize → reconcile → report): in auto mode, chain automatically. Stop only at hard gates.
+
+### Audit log
+
+Every action in auto mode — not just gate decisions — gets logged to `logs/auto-audit.md`. This is the "black box" that lets you trace what happened if something goes wrong.
+
+**Log every auto-mode action with:**
+```
+## [ISO timestamp]
+- **Action:** what was done (e.g. "Categorized 142 transactions from Stripe")
+- **Tool:** which tool/API was called
+- **Input:** key parameters (endpoint, record count, query)
+- **Output:** result summary (records returned, status, errors)
+- **Cost:** credits/units consumed
+- **Files changed:** which files were created or modified
+- **Auto-approved gate?** yes/no — if yes, what gate was skipped
+```
+
+Keep this log append-only. Never truncate or overwrite. Rotate monthly to `logs/auto-audit-YYYY-MM.md`.
+
+### Circuit breakers
+
+Auto mode must enforce these limits per session. If any limit is hit, stop and ask.
+
+| Breaker | Threshold | What happens |
+|---------|-----------|--------------|
+| API calls per session | 500 | Stop, show count by tool, ask to continue |
+| Credits spent per session | 80% of workspace budget | Stop, show spend summary |
+| Transactions modified per batch | 500 | Stop, confirm before processing rest |
+| Consecutive errors | 3 | Stop, diagnose before retrying |
+| File overwrites in single session | 10 | Stop, show list of files changed |
+| Cross-workspace writes | 1 (any) | Hard stop — never auto-approve writing outside active workspace |
+| Calculation variance >10% | 1 | Stop, show before/after comparison and verify |
+
+If a circuit breaker fires, log it in `logs/auto-audit.md` with full context and switch to interactive mode for the remainder of that workflow.
+
+### Rollback safety
+
+Before any multi-step auto-mode chain (categorize → reconcile → report), create a git checkpoint:
+- `git add -A && git commit -m "AUTO checkpoint: before [workflow name]"`
+- If the chain fails or a circuit breaker fires, the user can `git revert` to the checkpoint
+- Log the checkpoint commit hash in `logs/auto-audit.md`
 
 **Toggling:**
 - Set during onboarding, or change anytime in `workspace.config.md`
